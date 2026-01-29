@@ -1,0 +1,6 @@
+---
+ignored:
+  # disable word splitting warning
+  - SC2046
+  # disable yum vesrion pinning warning
+  - DL3041
