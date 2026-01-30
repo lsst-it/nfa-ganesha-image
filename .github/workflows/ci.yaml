@@ -7,6 +7,7 @@ name: Build and Publish
       - "**"
     tags:
       - "v*.*"
+      - "v*.*-*.*.*"    # v7.2-19.2.3
   pull_request:
     branches:
       - main
@@ -52,18 +53,22 @@ jobs:
             type=ref,event=branch
             type=ref,event=pr
 
-            # Works for both v7.2 and v7.2.0:
-            # v7.2    -> 7.2
-            # v7.2.0  -> 7.2.0
-            type=match,pattern=^v(\d+\.\d+(?:\.\d+)?)$,group=1
+            # "version" tag:
+            # v7.2                -> 7.2
+            # v7.2.0              -> 7.2.0
+            # v7.2-19.2.3         -> 7.2-19.2.3
+            # v7.2.0-19.2.3       -> 7.2.0-19.2.3
+            type=match,pattern=^v(\d+\.\d+(?:\.\d+)?(?:-\d+\.\d+\.\d+)?)$,group=1
 
-            # Also publish a "major.minor" tag when patch is present:
-            # v7.2.0 -> 7.2
-            # v7.2   -> 7.2
-            type=match,pattern=^v(\d+\.\d+)(?:\.\d+)?$,group=1
+            # "major.minor" tag (ignores optional patch and optional suffix):
+            # v7.2                -> 7.2
+            # v7.2.0              -> 7.2
+            # v7.2-19.2.3         -> 7.2
+            # v7.2.0-19.2.3       -> 7.2
+            type=match,pattern=^v(\d+\.\d+)(?:\.\d+)?(?:-\d+\.\d+\.\d+)?$,group=1
 
-            # Also publish a "major" tag:
-            # v7.2 or v7.2.0 -> 7
+            # "major" tag:
+            # any of the above -> 7
             type=match,pattern=^v(\d+)(?:\..*)?$,group=1
 
             type=sha
